@@ -178,7 +178,45 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to the Shosen LMS",
     "copyright": "Shosen LMS Ltd",
     "show_ui_builder": True,
-
+    "search_model": "accounts.User",
+    "user_avatar": None,
+    # Links to put along the top menu
+    "topmenu_links": [
+        # external url that opens in a new window (Permissions can be added)
+        # {
+        #     "name": "Visit Site",
+        #     "url": "/",
+        #     "new_window": True
+        # },
+        # model admin to link to (Permissions checked against model)
+        {
+            "model": "accounts.User",
+        },
+        {
+            "model": "api.Teacher",
+        },
+        {
+            "model": "api.Category",
+        },
+        {
+            "model": "api.Course",
+        },
+        {
+            "model": "api.Coupon",
+        },
+        {
+            "model": "api.Variant",
+        },
+        {
+            "model": "api.CartOrder",
+        },
+        {
+            "model": "api.EnrolledCourse",
+        },
+        {
+            "model": "api.Review",
+        },
+    ],
 }
 
 JAZZMIN_UI_TWEAKS = {
