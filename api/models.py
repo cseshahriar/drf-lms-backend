@@ -1,4 +1,4 @@
-import math
+import math  # noqa
 
 from django.db import models
 from django.utils.text import slugify
@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from accounts.models import User, Profile
 from shortuuid.django_fields import ShortUUIDField
-from moviepy.editor import VideoFileClip
+from moviepy.editor import VideoFileClip  # noqa
 
 
 LANGUAGE = (

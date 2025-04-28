@@ -18,7 +18,7 @@ class User(AbstractUser):
         Example: user@example.com + password (not username + password)
 
     2. REQUIRED_FIELDS = ['username'] means:
-        When creating a superuser (admin) with python manage.py createsuperuser:
+        When creating a superuser (admin) with python manage.py createsuperuser:  # noqa
         It will ask for email (because it's the login field)
         Then ask for username (because we listed it as required)
         Then ask for password

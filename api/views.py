@@ -188,7 +188,7 @@ class TeacherCourseDetailAPIView(generics.RetrieveAPIView):
     def get_object(self):
         course_id = self.kwargs['course_id']
         course = api_models.Course.objects.get(
-            course_id=course_id, platform_status="Published", 
+            course_id=course_id, platform_status="Published",
             teacher_course_status="Published"
         )
         return course
@@ -851,7 +851,7 @@ class QuestionAnswerListCreateAPIView(generics.ListCreateAPIView):
         )
         return Response({
             "message": "Group conversation Started"},
-                        status=status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED
         )
 
 
@@ -1163,7 +1163,7 @@ class CourseCreateAPIView(APIView):
 #                                 item_data_list.append(current_item)
 #                             current_item = {}
 #                         current_item.update({field_name: item_value})
-                    
+
 #                 if current_item:
 #                     item_data_list.append(current_item)
 
