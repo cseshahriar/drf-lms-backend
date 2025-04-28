@@ -138,7 +138,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 
 MAILGUN_API_KEY = env("MAILGUN_API_KEY")
@@ -165,7 +165,7 @@ EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-JAZZMIN_SETTINGS  = {
+JAZZMIN_SETTINGS = {
     "site_title": "Shosen LMS Admin",
     "site_header": "Shosen LMS",
     "site_brand": "Shosen LMS",
