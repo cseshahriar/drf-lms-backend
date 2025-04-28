@@ -1,0 +1,12 @@
+coverage run manage.py test	    Run tests with coverage tracking
+coverage report	                See the coverage in the terminal
+coverage html	                Create a nice HTML report in htmlcov/
+coverage erase	                Reset old coverage data
+
+pytest --cov=your_django_app_name
+pip install coverage
+coverage run manage.py test
+coverage report --fail-under=90
+coverage report
+coverage html
+# open htmlcov/index.html

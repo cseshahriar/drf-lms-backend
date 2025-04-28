@@ -1,0 +1,21 @@
+[flake8]
+# Basic config
+max-line-length = 79
+extend-ignore = E203, W503
+ignore = DJ01,F812,H101,H202,H233,H301,H306,H401,H403,H404,H405,H501
+exclude = 
+    docs,
+    migrations,
+    __pycache__,
+    .git,
+    .venv,
+    env,
+    venv,
+    *.sqlite3,
+    *.md,
+    *.txt
+per-file-ignores =
+    */migrations/*: E501
+    config/settings.py: E501
+    config/logging.py: E501, W292
+    */settings/*.py: E501

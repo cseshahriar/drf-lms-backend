@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  pms:
+    build:
+      context: .
+    command: >
+      sh -c "python manage.py migrate && python manage.py collectstatic &&
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - .:/app
+    depends_on:
+      - pms_db
+
+  pms_db:
+    image: postgres:13.3
+    volumes:
+      - ./backup_file/db:/var/lib/postgresql/data/
+
+    expose:
+      - "5432"
+    env_file: .env

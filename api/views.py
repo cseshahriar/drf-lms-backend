@@ -1167,14 +1167,17 @@ class CourseCreateAPIView(APIView):
 #                 if current_item:
 #                     item_data_list.append(current_item)
 
-#                 variant_data.append({'variant_data': variant_dict, 'variant_item_data': item_data_list})
+#                 variant_data.append({
+    # 'variant_data': variant_dict, 'variant_item_data': item_data_list})
 
 #         for data_entry in variant_data:
-#             variant = api_models.Variant.objects.create(title=data_entry['variant_data']['title'], course=course_instance)
+#             variant = api_models.Variant.objects.create(
+    # title=data_entry['variant_data']['title'], course=course_instance)
 
 #             for item_data in data_entry['variant_item_data']:
 #                 preview_value = item_data.get("preview")
-#                 preview = bool(strtobool(str(preview_value))) if preview_value is not None else False
+#                 preview = bool(
+    # strtobool(str(preview_value))) if preview_value is not None else False
 
 #                 api_models.VariantItem.objects.create(
 #                     variant=variant,
@@ -1185,7 +1188,8 @@ class CourseCreateAPIView(APIView):
 #                 )
 
 #     def save_nested_data(self, course_instance, serializer_class, data):
-#         serializer = serializer_class(data=data, many=True, context={"course_instance": course_instance})
+#         serializer = serializer_class(
+    # data=data, many=True, context={"course_instance": course_instance})
 #         serializer.is_valid(raise_exception=True)
 #         serializer.save(course=course_instance)
 
@@ -1199,7 +1203,7 @@ class CourseUpdateAPIView(generics.RetrieveUpdateAPIView):
         teacher_id = self.kwargs['teacher_id']
         course_id = self.kwargs['course_id']
 
-        teacher = api_models.Teacher.objects.get(id=teacher_id)
+        teacher = api_models.Teacher.objects.get(id=teacher_id)  # noqa
         course = api_models.Course.objects.get(course_id=course_id)
         return course
 
@@ -1437,7 +1441,7 @@ class FileUploadAPIView(APIView):
 
             # If not a video, just return the file URL
             return Response({
-                    "url": file_url,
+                "url": file_url,
             })
 
         return Response({"error": "No file provided"}, status=400)

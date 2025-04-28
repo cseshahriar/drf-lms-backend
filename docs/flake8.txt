@@ -1,0 +1,8 @@
+# Basic run
+flake8 .
+
+# With more detail (show source)
+flake8 --show-source .
+
+# Count errors only
+flake8 --count .

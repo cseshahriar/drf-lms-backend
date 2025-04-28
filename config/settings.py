@@ -1,7 +1,10 @@
 import os
-from pathlib import Path
-from environs import Env
 from datetime import timedelta
+from pathlib import Path
+
+from environs import Env
+
+
 from .logging import LOGGING
 
 LOGGING = LOGGING
@@ -146,8 +149,8 @@ MAILERSEND_API_TOKEN = env("MAILERSEND_API_TOKEN")
 MAILGUN_SENDER_DOMAIN = env("MAILGUN_SENDER_DOMAIN")
 
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
-PAYPAL_CLIENT_ID = env("PAYPAL_CLIENT_ID")  # PAYPAL_CLIENT_ID=9-320034750834758934758347
-PAYPAL_SECRET_ID = env("PAYPAL_SECRET_ID")  # PAYPAL_SECRET_ID=9-320034750834758934758347
+PAYPAL_CLIENT_ID = env("PAYPAL_CLIENT_ID")
+PAYPAL_SECRET_ID = env("PAYPAL_SECRET_ID")
 
 FRONTEND_SITE_URL = env("FRONTEND_SITE_URL")
 
@@ -211,7 +214,7 @@ JAZZMIN_UI_TWEAKS = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',  # Optional
-        'rest_framework_simplejwt.authentication.JWTAuthentication',        
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -237,7 +240,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',  # noqa
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
