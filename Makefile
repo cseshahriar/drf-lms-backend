@@ -10,7 +10,7 @@ migrate:
 	$(DJANGO) migrate
 
 start:
-	$(DJANGO) runserver 0.0.0.0:9000
+	$(DJANGO) runserver 0.0.0.0:8000
 
 superuser:
 	$(DJANGO) createsuperuser
