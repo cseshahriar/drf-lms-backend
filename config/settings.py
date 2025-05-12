@@ -145,10 +145,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'accounts.User'
 
-
-MAILGUN_API_KEY = env("MAILGUN_API_KEY")
-MAILERSEND_API_TOKEN = env("MAILERSEND_API_TOKEN")
-MAILGUN_SENDER_DOMAIN = env("MAILGUN_SENDER_DOMAIN")
+# Email
+# MAILGUN_API_KEY = env("MAILGUN_API_KEY")
+# MAILERSEND_API_TOKEN = env("MAILERSEND_API_TOKEN")
+# MAILGUN_SENDER_DOMAIN = env("MAILGUN_SENDER_DOMAIN")
 
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
 PAYPAL_CLIENT_ID = env("PAYPAL_CLIENT_ID")
@@ -163,7 +163,12 @@ ANYMAIL = {
 }
 
 FROM_EMAIL = env("FROM_EMAIL")
-EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT =  env("EMAIL_PORT")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
