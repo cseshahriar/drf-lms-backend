@@ -21,6 +21,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.pagination import PageNumberPagination
 
 from api import models as api_models
 from api import serializers as api_serializer
@@ -39,6 +40,25 @@ from drf_yasg.utils import swagger_auto_schema
 stripe.api_key = settings.STRIPE_SECRET_KEY
 PAYPAL_CLIENT_ID = settings.PAYPAL_CLIENT_ID
 PAYPAL_SECRET_ID = settings.PAYPAL_SECRET_ID
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    ''' Custom Pagination Class'''
+    page_size = 10  # Default page size
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+    def get_paginated_response(self, data):
+        return Response({
+            'links': {
+                'next': self.get_next_link(),
+                'previous': self.get_previous_link()
+            },
+            'count': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'results': data
+        })
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -177,6 +197,7 @@ class CourseListAPIView(generics.ListAPIView):
         platform_status="Published", teacher_course_status="Published")
     serializer_class = api_serializer.CourseSerializer
     permission_classes = [AllowAny]
+    pagination_class = StandardResultsSetPagination
 
 
 class TeacherCourseDetailAPIView(generics.RetrieveAPIView):

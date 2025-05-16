@@ -186,6 +186,7 @@ class Course(models.Model):
 
 
 class Variant(models.Model):
+    ''' Course Module model '''
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=1000)
     variant_id = ShortUUIDField(
@@ -203,11 +204,12 @@ class Variant(models.Model):
 
 
 class VariantItem(models.Model):
+    ''' course module lecture model '''
     variant = models.ForeignKey(
         Variant, on_delete=models.CASCADE, related_name="variant_items")
     title = models.CharField(max_length=1000)
     description = models.TextField(null=True, blank=True)
-    file = models.CharField(max_length=200)
+    file = models.CharField(max_length=200, null=True, blank=True)
     duration = models.DurationField(null=True, blank=True)
     content_duration = models.CharField(max_length=1000, null=True, blank=True)
     preview = models.BooleanField(default=False)
