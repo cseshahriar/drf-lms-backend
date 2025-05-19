@@ -216,6 +216,7 @@ class TeacherCourseDetailAPIView(generics.RetrieveAPIView):
 
 
 class CartAPIView(generics.CreateAPIView):
+    ''' Add to cart api '''
     queryset = api_models.Cart.objects.all()
     serializer_class = api_serializer.CartSerializer
     permission_classes = [AllowAny]
@@ -227,6 +228,7 @@ class CartAPIView(generics.CreateAPIView):
         country_name = request.data['country_name']
         cart_id = request.data['cart_id']
         course = api_models.Course.objects.filter(id=course_id).first()
+        print(f"{'*' * 10} cart_id: {cart_id}\n")
 
         if user_id != "undefined":
             user = User.objects.filter(id=user_id).first()
@@ -240,7 +242,7 @@ class CartAPIView(generics.CreateAPIView):
             country = country_object.name
         except Exception:
             country_object = None
-            country = "United States"
+            country = "Bangladesh"
 
         if country_object:
             tax_rate = country_object.tax_rate / 100
@@ -251,7 +253,7 @@ class CartAPIView(generics.CreateAPIView):
             cart_id=cart_id, course=course
         ).first()
 
-        if cart:
+        if cart:  # course qty is always 1
             cart.course = course
             cart.user = user
             cart.price = price
@@ -260,15 +262,12 @@ class CartAPIView(generics.CreateAPIView):
             cart.cart_id = cart_id
             cart.total = Decimal(cart.price) + Decimal(cart.tax_fee)
             cart.save()
-
             return Response(
                 {"message": "Cart Updated Successfully"},
                 status=status.HTTP_200_OK
             )
-
         else:
             cart = api_models.Cart()
-
             cart.course = course
             cart.user = user
             cart.price = price
@@ -277,7 +276,6 @@ class CartAPIView(generics.CreateAPIView):
             cart.cart_id = cart_id
             cart.total = Decimal(cart.price) + Decimal(cart.tax_fee)
             cart.save()
-
             return Response(
                 {"message": "Cart Created Successfully"},
                 status=status.HTTP_201_CREATED

@@ -20,6 +20,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         except Exception:
             token['teacher_id'] = 0
 
+        try:
+            token['country'] = user.profile.country
+        except Exception:
+            token['country'] = ""
+
         return token
 
 
