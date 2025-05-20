@@ -479,7 +479,7 @@ class Coupon(models.Model):
         Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     used_by = models.ManyToManyField(User, blank=True)
     code = models.CharField(max_length=50)
-    discount = models.IntegerField(default=1)
+    discount = models.IntegerField(default=1)  # percentage
     active = models.BooleanField(default=False)
     date = models.DateTimeField(default=timezone.now)
 

@@ -1,11 +1,15 @@
-STRIPE_SECRET_KEY = ""
-PAYPAL_CLIENT_ID =  "9-320034750834758934758347"
-PAYPAL_SECRET_ID = "9-320034750834758934758347"
-FRONTEND_SITE_URL = ""
+STRIPE_PUBLIC_KEY = "pk_test_2Kf7j9g3pFaZg0uo1VA6HMdi"
+STRIPE_SECRET_KEY = "sk_test_8afhc3XAJu8jIizixo2Selae"
+PAYPAL_CLIENT_ID =  "AU_NqwlDHb70Ydc0HjOZlZm0ZQTT3ave-FhAf7Iq_lpwqyeZzEhZbXXT9A3WLrW_8dv2xSR6QwrY7P5_"
+PAYPAL_SECRET_ID = "AU_NqwlDHb70Ydc0HjOZlZm0ZQTT3ave-FhAf7Iq_lpwqyeZzEhZbXXT9A3WLrW_8dv2xSR6QwrY7P5_"
+
+FRONTEND_SITE_URL = "http://localhost:5173/"
+
 ANYMAIL = {
     "MAILGUN_API_KEY": "",
     "MAILGUN_SENDER_DOMAIN": "",
 }
+
 FROM_EMAIL = 'shahriarcse@gmail.com'
 # Looking to send emails in production? Check out our Email API/SMTP product!
 EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
