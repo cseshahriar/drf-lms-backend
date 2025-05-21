@@ -5,7 +5,9 @@ import stripe
 import requests
 from datetime import datetime, timedelta
 from distutils.util import strtobool
+from urllib.parse import unquote
 
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -191,17 +193,37 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
 
 
 class CategoryListAPIView(generics.ListAPIView):
-    queryset = api_models.Category.objects.filter(active=True)
+    queryset = api_models.Category.objects.filter(active=True).order_by('pk')
     serializer_class = api_serializer.CategorySerializer
     permission_classes = [AllowAny]
 
 
 class CourseListAPIView(generics.ListAPIView):
-    queryset = api_models.Course.objects.filter(
-        platform_status="Published", teacher_course_status="Published")
+    ''' Course list '''
     serializer_class = api_serializer.CourseSerializer
     permission_classes = [AllowAny]
     pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        queryset = api_models.Course.objects.filter(
+            platform_status="Published",
+            teacher_course_status="Published"
+        )
+        title = self.request.query_params.get('title', None)
+        # filter by category default featured
+        category_title = self.request.query_params.get('category_title', None)
+        if category_title and category_title == "All":
+            queryset = queryset.filter(featured=True)
+        elif category_title and category_title != "All":
+            queryset = queryset.filter(
+                Q(category__title__iexact=category_title) | Q(
+                    category__title__startswith=category_title)
+            )
+
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+
+        return queryset.order_by('pk')
 
 
 class TeacherCourseDetailAPIView(generics.RetrieveAPIView):
@@ -775,6 +797,16 @@ class StudentNoteDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return note
 
 
+class ReviewListAPIView(generics.ListAPIView):
+    ''' home page '''
+    serializer_class = api_serializer.ReviewSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = api_models.Review.objects.filter(active=True).order_by('-pk')
+        return queryset
+
+
 class StudentRateCourseCreateAPIView(generics.CreateAPIView):
     serializer_class = api_serializer.ReviewSerializer
     permission_classes = [AllowAny]
@@ -1156,65 +1188,6 @@ class CourseCreateAPIView(APIView):
         return Response({
             "message": "Course Created", "course_id": course.course_id
         }, status=status.HTTP_201_CREATED)
-
-
-# class CourseCreateAPIView(generics.CreateAPIView):
-#     querysect = api_models.Course.objects.all()
-#     serializer_class = api_serializer.CourseSerializer
-#     permisscion_classes = [AllowAny]
-
-#     def perform_create(self, serializer):
-#         serializer.is_valid(raise_exception=True)
-#         course_instance = serializer.save()
-
-#         variant_data = []
-#         for key, value in self.request.data.items():
-#             if key.startswith('variant') and '[variant_title]' in key:
-#                 index = key.split('[')[1].split(']')[0]
-#                 title = value
-
-#                 variant_dict = {'title': title}
-#                 item_data_list = []
-#                 current_item = {}
-#                 variant_data = []
-
-#                 for item_key, item_value in self.request.data.items():
-#                     if f'variants[{index}][items]' in item_key:
-#                         field_name = item_key.split('[')[-1].split(']')[0]
-#                         if field_name == "title":
-#                             if current_item:
-#                                 item_data_list.append(current_item)
-#                             current_item = {}
-#                         current_item.update({field_name: item_value})
-
-#                 if current_item:
-#                     item_data_list.append(current_item)
-
-#                 variant_data.append({
-    # 'variant_data': variant_dict, 'variant_item_data': item_data_list})
-
-#         for data_entry in variant_data:
-#             variant = api_models.Variant.objects.create(
-    # title=data_entry['variant_data']['title'], course=course_instance)
-
-#             for item_data in data_entry['variant_item_data']:
-#                 preview_value = item_data.get("preview")
-#                 preview = bool(
-    # strtobool(str(preview_value))) if preview_value is not None else False
-
-#                 api_models.VariantItem.objects.create(
-#                     variant=variant,
-#                     title=item_data.get("title"),
-#                     description=item_data.get("description"),
-#                     file=item_data.get("file"),
-#                     preview=preview,
-#                 )
-
-#     def save_nested_data(self, course_instance, serializer_class, data):
-#         serializer = serializer_class(
-    # data=data, many=True, context={"course_instance": course_instance})
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(course=course_instance)
 
 
 class CourseUpdateAPIView(generics.RetrieveUpdateAPIView):

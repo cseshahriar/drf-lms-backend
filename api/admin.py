@@ -3,7 +3,16 @@ from api import models
 
 admin.site.register(models.Teacher)
 admin.site.register(models.Category)
-admin.site.register(models.Course)
+
+
+@admin.register(models.Course)
+class ClassAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk', 'title', 'price', 'level', 'category', 'teacher', 'featured',
+    )
+    search_fields = ('title', )
+    list_filter = ('category', 'teacher', 'featured', )
+    ordering = ('pk', )
 
 
 class VariantItemTabularInline(admin.TabularInline):

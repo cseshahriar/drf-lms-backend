@@ -40,7 +40,7 @@ urlpatterns = [
         api_views.StripeCheckoutAPIView.as_view()
     ),
     path("payment/payment-success/", api_views.PaymentSuccessAPIView.as_view()),
-
+    path("course/reviews", api_views.ReviewListAPIView.as_view()),
 
     # Student API Endpoints
     path(
