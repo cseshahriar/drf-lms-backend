@@ -3,10 +3,23 @@ import math  # noqa
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
+from django.utils.timezone import now
 
 from accounts.models import User, Profile
 from shortuuid.django_fields import ShortUUIDField
 from moviepy.editor import VideoFileClip  # noqa
+
+
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    order = models.FloatField(
+        default=0.0, help_text="Supports ordering like 1, 1.1, 1.2 etc."
+    )
+
+    class Meta:
+        abstract = True
+        ordering = ['order', '-created_at']
 
 
 LANGUAGE = (
@@ -95,10 +108,10 @@ class Teacher(models.Model):
         return Course.objects.filter(teacher=self).count()
 
 
-class Category(models.Model):
+class Category(BaseModel):
     title = models.CharField(max_length=100)
     image = models.FileField(
-        upload_to="course-file", default="category.jpg", null=True, blank=True
+        upload_to="categories/", default="category.jpg", null=True, blank=True
     )
     active = models.BooleanField(default=True)
     slug = models.SlugField(unique=True, null=True, blank=True)
@@ -119,15 +132,21 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
 
-class Course(models.Model):
+class Course(BaseModel):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, blank=True
     )
     teacher = models.ForeignKey(
         Teacher, on_delete=models.SET_NULL, blank=True, null=True
     )
-    file = models.CharField(max_length=200, blank=True, null=True)
-    image = models.CharField(max_length=200, blank=True, null=True)
+    file = models.CharField(
+        max_length=200, blank=True, null=True,
+        help_text="Introduction Video"
+    )
+    image = models.FileField(
+        upload_to="courses/", blank=True, null=True, default="default.jpg",
+        help_text="Course Feature Image"
+    )
     title = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(
@@ -185,7 +204,7 @@ class Course(models.Model):
         return Review.objects.filter(course=self, active=True)
 
 
-class Variant(models.Model):
+class Variant(BaseModel):
     ''' Course Module model '''
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=1000)
@@ -202,14 +221,20 @@ class Variant(models.Model):
     def items(self):
         return VariantItem.objects.filter(variant=self)
 
+    class Meta:
+        verbose_name = "Course Module"
 
-class VariantItem(models.Model):
+
+class VariantItem(BaseModel):
     ''' course module lecture model '''
     variant = models.ForeignKey(
         Variant, on_delete=models.CASCADE, related_name="variant_items")
     title = models.CharField(max_length=1000)
     description = models.TextField(null=True, blank=True)
-    file = models.CharField(max_length=200, null=True, blank=True)
+    file = models.CharField(
+        max_length=200, null=True, blank=True,
+        help_text="Video File URL"
+    )
     duration = models.DurationField(null=True, blank=True)
     content_duration = models.CharField(max_length=1000, null=True, blank=True)
     preview = models.BooleanField(default=False)
@@ -219,6 +244,9 @@ class VariantItem(models.Model):
 
     def __str__(self):
         return f"{self.variant.title} - {self.title}"
+
+    class Meta:
+        verbose_name = "Course Lession"
 
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)
@@ -237,7 +265,7 @@ class VariantItem(models.Model):
     #         super().save(update_fields=['content_duration'])
 
 
-class QuestionAnswer(models.Model):
+class QuestionAnswer(BaseModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     user = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -259,7 +287,7 @@ class QuestionAnswer(models.Model):
         return Profile.objects.get(user=self.user)
 
 
-class QuestionAnswerMessage(models.Model):
+class QuestionAnswerMessage(BaseModel):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     question = models.ForeignKey(QuestionAnswer, on_delete=models.CASCADE)
     user = models.ForeignKey(
@@ -474,12 +502,15 @@ class Notification(models.Model):
         return self.type
 
 
-class Coupon(models.Model):
+class Coupon(BaseModel):
     teacher = models.ForeignKey(
         Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey(
+        Course, on_delete=models.SET_NULL, null=True, blank=True)
     used_by = models.ManyToManyField(User, blank=True)
     code = models.CharField(max_length=50)
-    discount = models.IntegerField(default=1)  # percentage
+    discount = models.IntegerField(default=1, help_text="Pecentage")  # percentage
+    flat_discount = models.FloatField(default=2500, help_text="Amount")  # percentage
     active = models.BooleanField(default=False)
     date = models.DateTimeField(default=timezone.now)
 
