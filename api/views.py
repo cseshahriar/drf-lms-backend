@@ -43,7 +43,6 @@ from drf_yasg.utils import swagger_auto_schema
 logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-logger.info(f"{'*' * 10} api STRIPE_SECRET_KEY : {settings.STRIPE_SECRET_KEY}\n")
 PAYPAL_CLIENT_ID = settings.PAYPAL_CLIENT_ID
 PAYPAL_SECRET_ID = settings.PAYPAL_SECRET_ID
 
