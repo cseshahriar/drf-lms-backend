@@ -286,10 +286,10 @@ class EnrolledCourseSerializer(serializers.ModelSerializer):
             self.Meta.depth = 3
 
 
-class CourseSerializer(serializers.ModelSerializer):
-    students = EnrolledCourseSerializer(
-        many=True, required=False, read_only=True,)
-    curriculum = VariantSerializer(many=True, required=False, read_only=True,)
+class RelatedCourseSerializer(serializers.ModelSerializer):
+    '''Related Course '''
+    students = EnrolledCourseSerializer(many=True, required=False, read_only=True)
+    curriculum = VariantSerializer(many=True, required=False, read_only=True)
     lectures = VariantItemSerializer(many=True, required=False, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True, required=False)
 
@@ -304,12 +304,54 @@ class CourseSerializer(serializers.ModelSerializer):
         model = api_models.Course
 
     def __init__(self, *args, **kwargs):
+        super(RelatedCourseSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get("request")
+        if request and request.method == "POST":
+            self.Meta.depth = 0
+        else:
+            self.Meta.depth = 3
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    ''' Course serialize '''
+    students = EnrolledCourseSerializer(
+        many=True, required=False, read_only=True
+    )
+    curriculum = VariantSerializer(many=True, required=False, read_only=True)
+    lectures = VariantItemSerializer(many=True, required=False, read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True, required=False)
+    related_courses = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = [
+            "id", "category", "teacher", "file", "image", "title",
+            "description", "price", "language", "level", "platform_status",
+            "teacher_course_status", "featured", "course_id", "slug", "date",
+            "students", "curriculum", "lectures", "average_rating",
+            "rating_count", "reviews", 'related_courses'
+        ]
+        model = api_models.Course
+
+    def __init__(self, *args, **kwargs):
         super(CourseSerializer, self).__init__(*args, **kwargs)
         request = self.context.get("request")
         if request and request.method == "POST":
             self.Meta.depth = 0
         else:
             self.Meta.depth = 3
+
+    def get_related_courses(self, obj):
+        # Option 1: Manual ManyToManyField
+        related = obj.related_courses.all()
+
+        # Optional fallback: add category-based auto if fewer than 4 related courses
+        if related.count() < 4:
+            auto_related = api_models.Course.objects.filter(
+                category=obj.category
+            ).exclude(id=obj.id).exclude(id__in=related.values_list('id', flat=True))[:4 - related.count()]
+            related = list(related) + list(auto_related)
+
+        return RelatedCourseSerializer(related, many=True).data
 
 
 class StudentSummarySerializer(serializers.Serializer):

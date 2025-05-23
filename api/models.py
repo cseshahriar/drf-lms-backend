@@ -171,8 +171,15 @@ class Course(BaseModel):
     course_id = ShortUUIDField(
         unique=True, length=6, max_length=20, alphabet="1234567890"
     )
-    slug = models.SlugField(unique=True, null=True, blank=True)
+    slug = models.SlugField(unique=True, null=True, blank=True, max_length=255)
     date = models.DateTimeField(default=timezone.now)
+    related_courses = models.ManyToManyField(
+        'self',
+        blank=True,
+        symmetrical=False,
+        related_name='related_to',
+        help_text="Manually select related courses"
+    )
 
     def __str__(self):
         return self.title
@@ -203,6 +210,8 @@ class Course(BaseModel):
     def reviews(self):
         return Review.objects.filter(course=self, active=True)
 
+
+# section -> module -> lecture
 
 class Variant(BaseModel):
     ''' Course Module model '''
