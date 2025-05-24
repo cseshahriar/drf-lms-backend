@@ -882,7 +882,7 @@ class QuestionAnswerListCreateAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         course_id = self.kwargs['course_id']
         course = api_models.Course.objects.get(id=course_id)
-        return api_models.Question_Answer.objects.filter(course=course)
+        return api_models.QuestionAnswer.objects.filter(course=course)
 
     def create(self, request, *args, **kwargs):
         course_id = request.data['course_id']
@@ -893,13 +893,13 @@ class QuestionAnswerListCreateAPIView(generics.ListCreateAPIView):
         user = User.objects.get(id=user_id)
         course = api_models.Course.objects.get(id=course_id)
 
-        question = api_models.Question_Answer.objects.create(
+        question = api_models.QuestionAnswer.objects.create(
             course=course,
             user=user,
             title=title
         )
 
-        api_models.Question_Answer_Message.objects.create(
+        api_models.QuestionAnswerMessage.objects.create(
             course=course,
             user=user,
             message=message,
@@ -923,7 +923,7 @@ class QuestionAnswerMessageSendAPIView(generics.CreateAPIView):
 
         user = User.objects.get(id=user_id)
         course = api_models.Course.objects.get(id=course_id)
-        question = api_models.Question_Answer.objects.get(qa_id=qa_id)
+        question = api_models.QuestionAnswer.objects.get(qa_id=qa_id)
         api_models.Question_Answer_Message.objects.create(
             course=course,
             user=user,

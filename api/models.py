@@ -284,7 +284,7 @@ class QuestionAnswer(BaseModel):
     date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.user.username} - {self.course.title}"
+        return f"{self.user.username} - {self.title}"
 
     class Meta:
         ordering = ['-date']

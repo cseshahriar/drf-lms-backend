@@ -60,8 +60,23 @@ class VariantItemAdmin(admin.ModelAdmin):
     list_editable = ('order', 'content_duration', )
 
 
-admin.site.register(models.QuestionAnswer)
-admin.site.register(models.QuestionAnswerMessage)
+@admin.register(models.QuestionAnswer)
+class QuestionAnswerAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'course', 'user', 'title', 'qa_id', 'date', )
+    search_fields = ('title', )
+    list_filter = ('course', 'user')
+
+
+@admin.register(models.QuestionAnswerMessage)
+class QuestionAnswerMessageAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk', 'course', 'question', 'user', 'message', 'qam_id', 'qa_id',
+        'date'
+    )
+    search_fields = ('qam_id', 'qa_id', )
+    list_filter = ('course', 'question', 'user')
+
+
 admin.site.register(models.Cart)
 admin.site.register(models.CartOrder)
 admin.site.register(models.CartOrderItem)
