@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from distutils.util import strtobool
 from urllib.parse import unquote
 
+from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.core.mail import EmailMultiAlternatives
@@ -45,6 +46,7 @@ logger = logging.getLogger(__name__)
 stripe.api_key = settings.STRIPE_SECRET_KEY
 PAYPAL_CLIENT_ID = settings.PAYPAL_CLIENT_ID
 PAYPAL_SECRET_ID = settings.PAYPAL_SECRET_ID
+FRONTEND_SITE_URL = settings.FRONTEND_SITE_URL
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -99,7 +101,7 @@ class PasswordResetEmailVerifyAPIView(generics.RetrieveAPIView):
             user.otp = generate_random_otp()
             user.save()
 
-            link = f"http://localhost:5173/create-new-password/?otp={user.otp}&uuidb64={uuidb64}&refresh_token={refresh_token}"  # noqa
+            link = f"{FRONTEND_SITE_URL}create-new-password/?otp={user.otp}&uuidb64={uuidb64}&refresh_token={refresh_token}"  # noqa
 
             context = {
                 "link": link,

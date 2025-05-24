@@ -214,7 +214,7 @@ class Course(BaseModel):
 # section -> module -> lecture
 
 class Variant(BaseModel):
-    ''' Course Module model '''
+    ''' Course Module/Curriculums model '''
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=1000)
     variant_id = ShortUUIDField(

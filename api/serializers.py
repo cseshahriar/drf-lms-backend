@@ -15,6 +15,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['full_name'] = user.full_name
         token['email'] = user.email
         token['username'] = user.username
+
         try:
             token['teacher_id'] = user.teacher.id
         except Exception:
@@ -90,7 +91,6 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class VariantItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         fields = '__all__'
         model = api_models.VariantItem
@@ -266,9 +266,9 @@ class CountrySerializer(serializers.ModelSerializer):
 
 
 class EnrolledCourseSerializer(serializers.ModelSerializer):
+    curriculum = VariantSerializer(many=True, read_only=True)
     lectures = VariantItemSerializer(many=True, read_only=True)
     completed_lesson = CompletedLessonSerializer(many=True, read_only=True)
-    curriculum = VariantSerializer(many=True, read_only=True)
     note = NoteSerializer(many=True, read_only=True)
     question_answer = Question_AnswerSerializer(many=True, read_only=True)
     review = ReviewSerializer(many=False, read_only=True)

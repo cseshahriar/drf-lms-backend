@@ -41,18 +41,24 @@ class VariantItemStackedInline(admin.StackedInline):
 @admin.register(models.Variant)
 class VariantAdmin(admin.ModelAdmin):
     ''' Variant Admin '''
-    list_display = ('pk', 'title', 'course', )
+    list_display = ('pk', 'order', 'title', 'course', )
     list_filter = ('course', )
     search_fields = ('title', )
+    ordering = ('order', )
     inlines = [VariantItemTabularInline, ]
+    list_editable = ('order', )
 
 
 @admin.register(models.VariantItem)
 class VariantItemAdmin(admin.ModelAdmin):
     ''' VariantItem Admin '''
-    list_display = ('pk', 'title', 'variant', )
+    list_display = (
+        'pk', 'order', 'title', 'variant', 'duration', 'content_duration')
     list_filter = ('variant', )
     search_fields = ('title', )
+    ordering = ('order', )
+    list_editable = ('order', 'content_duration', )
+
 
 admin.site.register(models.QuestionAnswer)
 admin.site.register(models.QuestionAnswerMessage)
