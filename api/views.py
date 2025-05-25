@@ -924,14 +924,14 @@ class QuestionAnswerMessageSendAPIView(generics.CreateAPIView):
         user = User.objects.get(id=user_id)
         course = api_models.Course.objects.get(id=course_id)
         question = api_models.QuestionAnswer.objects.get(qa_id=qa_id)
-        api_models.Question_Answer_Message.objects.create(
+        api_models.QuestionAnswerMessage.objects.create(
             course=course,
             user=user,
             message=message,
             question=question
         )
 
-        question_serializer = api_serializer.QuestionAnswerSerializer(question)
+        question_serializer = api_serializer.Question_AnswerSerializer(question)
         return Response({
             "message": "Message Sent", "question": question_serializer.data})
 
