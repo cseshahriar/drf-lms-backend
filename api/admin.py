@@ -84,7 +84,17 @@ admin.site.register(models.CartOrderItem)
 admin.site.register(models.CompletedLesson)
 admin.site.register(models.EnrolledCourse)
 admin.site.register(models.Note)
-admin.site.register(models.Review)
+
+
+@admin.register(models.Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk', 'user', 'course', 'rating', 'review', 'reply', 'active', 'date'
+    )
+    search_fields = ('user__username', 'course__title')
+    list_filter = ('course', )
+
+
 admin.site.register(models.Notification)
 admin.site.register(models.Coupon)
 admin.site.register(models.Wishlist)
