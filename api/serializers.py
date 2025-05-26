@@ -244,6 +244,8 @@ class CouponSerializer(serializers.ModelSerializer):
 
 
 class WishlistSerializer(serializers.ModelSerializer):
+    ''' Whish List Serializer '''
+    enrollment_count = serializers.SerializerMethodField()
 
     class Meta:
         fields = '__all__'
@@ -257,6 +259,9 @@ class WishlistSerializer(serializers.ModelSerializer):
         else:
             self.Meta.depth = 3
 
+    def get_enrollment_count(self, obj):
+        return api_models.EnrolledCourse.objects.filter(
+            course=obj.course).count()
 
 class CountrySerializer(serializers.ModelSerializer):
 
