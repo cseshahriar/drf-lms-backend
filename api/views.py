@@ -1115,7 +1115,7 @@ class TeacherQuestionAnswerListAPIView(generics.ListAPIView):
     def get_queryset(self):
         teacher_id = self.kwargs['teacher_id']
         teacher = api_models.Teacher.objects.get(id=teacher_id)
-        return api_models.Question_Answer.objects.filter(
+        return api_models.QuestionAnswer.objects.filter(
             course__teacher=teacher
         )
 
