@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import IntegrityError
 
 
 class User(AbstractUser):
@@ -35,7 +37,7 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         email_username, full_name = self.email.split("@")
         if self.full_name == "" or self.full_name is None:
-            self.full_name == email_username
+            self.full_name = email_username
         if self.username == "" or self.username is None:
             self.username = email_username
         super(User, self).save(*args, **kwargs)
@@ -61,20 +63,13 @@ class Profile(models.Model):
         else:
             return str(self.user.full_name)
 
-    def save(self, *args, **kwargs):
-        if self.full_name == "" or self.full_name is None:
-            self.full_name == self.user.username
-        super(Profile, self).save(*args, **kwargs)
 
-
-def create_user_profile(sender, instance, created, **kwargs):
+@receiver(post_save, sender=User)
+def create_or_update_profile(sender, instance, created, **kwargs):
+    """Creates or updates profile, when User object changes"""
     if created:
-        Profile.objects.create(user=instance)
-
-
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
-post_save.connect(create_user_profile, sender=User)
-post_save.connect(save_user_profile, sender=User)
+        try:
+            Profile.objects.get_or_create(user=instance)
+        except Exception as error:
+            print(error)
+    # instance.profile.save()
